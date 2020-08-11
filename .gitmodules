@@ -1,0 +1,6 @@
+[submodule "github.com/caml-js"]
+	path = github.com/caml-js
+	url = git@github.com:CodeFr33k/caml-js.git
+[submodule "github.com/time-js"]
+	path = github.com/time-js
+	url = git@github.com:CodeFr33k/time-js.git
