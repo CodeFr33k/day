@@ -21,7 +21,7 @@ export default class extends Vue {
     date = '2020-202'; 
     created() {
         const record = new Record;
-        record.annotations.push({
+        record.userData.push({
             key: 'date',
             value: '2020-200',
         });

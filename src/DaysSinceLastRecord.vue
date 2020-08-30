@@ -15,28 +15,38 @@ import {
     Vue,
     Prop,
 } from 'vue-property-decorator';
+import {
+    Observer,
+} from 'mobx-vue';
+@Observer
 @Component
 export default class App extends Vue {
     @Prop() readonly records!: Record[];
     @Prop() readonly date!: string;
     get daysSinceLastRecord() {
-        let lastDate = '1970-001';
+        let lastDate = '';
         for(const record of this.records) {
-            const annotation = record.annotations.find((annotation) => {
-                return annotation.key === 'date';     
-            });
-            if(!annotation) {
-                continue;
+            for(const data of record.userData) {
+                if(data.key !== 'date') {
+                    continue;
+                }
+                const match = data.value.match(/^\d{4}-(\d{3})/);
+                if(!match) {
+                    continue;
+                }
+                const a = toSeconds(data.value);
+                if(!lastDate) {
+                    lastDate = data.value;
+                    continue;
+                }
+                const b = toSeconds(lastDate);
+                if(a > b) {
+                    lastDate = data.value;
+                }
             }
-            const match = annotation.value.match(/^\d{4}-(\d{3})/);
-            if(!match) {
-                continue;
-            }
-            const a = toSeconds(annotation.value);
-            const b = toSeconds(lastDate);
-            if(a > b) {
-                lastDate = annotation.value;
-            }
+        }
+        if(!lastDate) {
+            return 0;
         }
         const x = toSeconds(lastDate);
         const y = toSeconds(this.date);

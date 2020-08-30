@@ -1,13 +1,14 @@
 <template>
   <div class="app">
     <DaysSinceLastRecord
+        v-if="store.currentRecords.length > 0"
         :date="now"
         :records="store.currentRecords"
     />
     <div class="year-box">
         <Day
             :key="i"
-            v-for="(day, i) in days"
+            v-for="(day, i) in store.days"
             :records="day.records"
             :year="year"
             :day="i + 1"
@@ -17,12 +18,16 @@
 </template>
 
 <script lang="ts">
-import store from 'caml-js/store';
 import format from 'time-js/format';
 import dayOfYear from 'time-js/dayOfYear';
+import store from '@/store';
 import Day from './Day.vue';
 import DaysSinceLastRecord from './DaysSinceLastRecord.vue';
 import { Component, Vue } from 'vue-property-decorator';
+import {
+    Observer,
+} from 'mobx-vue';
+@Observer
 @Component({
   components: {
       Day,
@@ -32,6 +37,7 @@ import { Component, Vue } from 'vue-property-decorator';
 export default class App extends Vue {
     store = store;
     year = (new Date()).getFullYear();
+
     get now() {
         const now = new Date();
         const day = dayOfYear(
@@ -44,30 +50,9 @@ export default class App extends Vue {
             day,
         );
     }
-    get days() {
-        const days = [];
-        for(const day of Array(360).keys()) {
-            days.push({
-                records: [],
-            });
-        }
-        for(const record of this.store.currentRecords) {
-            const date = record.annotations.find((annotation: any) => {
-                return annotation.key === 'date';
-            });
-            if(!date) {
-                continue;
-            }
-            const match = date.value.match(/^\d{4}-(\d{3})/);
-            if(!match) {
-                continue;
-            }
-            const day = match[1];
-            (days[day - 1].records as any).push(record);
-        }
-        return days;
-    }
+
 }
+
 </script>
 
 <style lang="sass">

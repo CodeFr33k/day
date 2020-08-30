@@ -21,9 +21,9 @@ export default class extends Vue {
     day = 1; 
     created() {
         const record = new Record;
-        record.annotations.push({
-            key: 'duration',
-            value: '3600',
+        record.userData.push({
+            key: 'day label',
+            value: '1',
         });
         this.records.push(record);
     }

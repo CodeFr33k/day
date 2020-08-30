@@ -4,7 +4,7 @@
        :class="{ 'has-records': records.length, active: isToday }"
     >
      <div class="day">{{ day }}</div>
-     <div class="duration">{{ duration }}</div>
+     <div class="label">{{ label }}</div>
     </div>
 </template>
 
@@ -16,26 +16,29 @@ import {
     Vue,
     Prop,
 } from 'vue-property-decorator';
+import {
+    Observer,
+} from 'mobx-vue';
+@Observer
 @Component
 export default class App extends Vue {
     @Prop() readonly records!: Record[];
     @Prop() readonly year!: number;
     @Prop() readonly day!: number;
-    get duration() {
-        let result = 0;
+
+    get label() {
+        let result = '';
         for(const record of this.records) {
-            const duration = record.annotations.find((annotation: any) => {
-                return annotation.key === 'duration';
-            });
-            if(!duration) {
-                continue;
+            for(const data of record.userData) {
+                if(data.key !== 'day label') {
+                    continue;
+                }
+                result = data.value;
             }
-            result += Math.ceil(
-                parseInt(duration.value) / 3600
-            );
         }
         return result;
     }
+
     get isToday() {
         const now = new Date();
         if(now.getFullYear() !== this.year) {
@@ -51,7 +54,9 @@ export default class App extends Vue {
         }
         return true;
     }
+
 }
+
 </script>
 
 <style lang="sass">
@@ -80,7 +85,7 @@ export default class App extends Vue {
     line-height: 12px
     padding: 1px
 
-.duration
+.label
     position: absolute
     bottom: 0
     right: 0
