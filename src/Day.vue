@@ -68,6 +68,7 @@ export default class App extends Vue {
     width: 50px
     height: 24px
     margin: 1px
+    overflow: hidden
 
 .has-records
     background: #C6E2FF	
@@ -93,5 +94,6 @@ export default class App extends Vue {
     font-size: 14px
     line-height: 14px
     padding: 1px
+    whitespace: nowrap
 
 </style>
