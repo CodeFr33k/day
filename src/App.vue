@@ -24,6 +24,7 @@ import store from '@/store';
 import Day from './Day.vue';
 import DaysSinceLastRecord from './DaysSinceLastRecord.vue';
 import { Component, Vue } from 'vue-property-decorator';
+import { observe } from 'mobx';
 import {
     Observer,
 } from 'mobx-vue';
@@ -37,6 +38,18 @@ import {
 export default class App extends Vue {
     store = store;
     year = (new Date()).getFullYear();
+    disposer: any;
+
+    mounted() {
+        this.disposer = observe(this.store.title, (delta: any) => {
+            document.title = delta.object;
+        });
+        document.title = store.title;
+    }
+
+    destroyed() {
+        this.disposer();
+    }
 
     get now() {
         const now = new Date();

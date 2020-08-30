@@ -90,9 +90,12 @@ export default class Store {
     }
 
     async loadManifest(uri: string) {
+        const match = uri.match(/[^/]+$/);
+        if(match) {
+            this.title.set(match[0]);
+        }
         const manifest = await Manifest.fetch(uri)
         const files = manifest.toFiles();
-        this.title.set(files[0]);
         for(const file of files) {
             const fileuri = uri.replace(/[^\\/]+$/, file);
             this.loadFile(fileuri);
