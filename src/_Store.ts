@@ -61,6 +61,9 @@ export default class Store {
                     continue;
                 }
                 const day = match[1];
+                if(day > 360) {
+                    continue;
+                }
                 (days[day - 1].records as any).push(record);
             }
         }
